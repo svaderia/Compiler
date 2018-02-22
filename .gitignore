@@ -1,0 +1,15 @@
+# Object files
+*.o
+*.ko
+
+# Precompiled Headers
+*.gch
+
+# Executables
+*.exe
+*.out
+*.x86_64
+*.hex
+
+# By Users
+.vscode
