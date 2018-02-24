@@ -5,7 +5,7 @@
 #ifndef _SET
 #define _SET
 
-#define SIZE 4
+#define SET_SIZE 4
 struct set{
     char** elements;
     int size;
