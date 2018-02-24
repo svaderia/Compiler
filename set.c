@@ -1,26 +1,27 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include "_SET.h"
 
 Set* get_set(){
     Set* temp = (Set*) malloc(sizeof(Set));
     if(temp){
-        temp -> elements = (char**) malloc(SIZE * sizeof(char*));
-        temp -> size = SIZE;
+        temp -> elements = (char**) malloc(SET_SIZE * sizeof(char*));
+        temp -> size = SET_SIZE;
         temp -> empty = 0;
     }
     return temp;
 }
 
 Set* add_to_set(Set* set, char* key){
-    set -> elements[set->empty] = (char*) malloc((strlen(key) + 1) * sizeof(char));
-    memcpy(set -> elements[set->empty], key, (strlen(key) + 1));
+    set -> elements[set->empty] = (char*) malloc((strlen(key) + 3) * sizeof(char));
+    strcpy(set -> elements[set->empty], key);
     (set -> empty) ++;
 
     if(set -> empty >= set -> size){
-        set -> size *= 2;
-        set -> elements = (char**) realloc(set -> elements, set -> size);
+        (set -> size) *= 2;
+        set -> elements = (char**) realloc(set -> elements, (set -> size * sizeof(char*))) ;
     }
     return set;
 }
