@@ -5,6 +5,7 @@
 #include "_LEXER.h"
 #include "_LEXERDEF.h"
 #include "_SET.h"
+#include "_LINKEDLIST.h"
 
 #define TOKEN_RETURN(token, i, lexeme) token -> value = (char*) malloc((strlen(lexeme) + 1) * sizeof(char));\
 strcpy(token->value, lexeme); \
@@ -461,12 +462,12 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
 					case '7':
 					case '8':
 					case '9':
-                        offset ++;
+                        lexeme[i++] = b[offset++];
                         TOKEN_RETURN(token, ID, lexeme);
                     default:
                         if(serach_set(keywords, lexeme)){
                             token_id ik = token_to_id(convert_to_upper(lexeme));
-                            offset++;
+                            // offset++;
                             TOKEN_RETURN(token, ik, lexeme);
                         }
                         TOKEN_RETURN(token, ID, lexeme);
@@ -500,7 +501,7 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
                 while('a' <= b[offset] && b[offset] <= 'z' || 'A' <= b[offset] && b[offset] <= 'Z' || '0' <= b[offset] && b[offset] <= '9'){
                     lexeme[i++] = b[offset++];
                 }
-                if(strcmp(lexeme, "_main")){
+                if(! strcmp(lexeme, "_main")){
                     TOKEN_RETURN(token, MAIN, lexeme);
                 }else
                     TOKEN_RETURN(token, FUNID, lexeme);
@@ -531,4 +532,17 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
        }
     }
     free(lexeme);
+}
+
+List* all_tokens(FILE* fp, buffer b, int k, Set* keywords){
+    List* l = create_list();
+    while(! ( offset >= strlen(b) && eof )){
+        l = add_to_list(l, getToken(fp, b, k, keywords));
+    }
+    Token* dol = (Token*) malloc(sizeof(Token));
+    dol -> id = DOLLAR;
+    dol -> lineNo = lineNo;
+    dol -> value = "$";
+    l = add_to_list(l, dol);
+    return l;
 }
