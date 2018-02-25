@@ -4,9 +4,9 @@
 #ifndef _PARSER
 #define _PARSER
 
-void read_grammer(G_Ele G[][MAX_RULE_LENGTH], FILE* fp);
+void read_grammar(G_Ele G[][MAX_RULE_LENGTH], FILE* fp);
 
-void print_grammer_table(G_Ele G[][MAX_RULE_LENGTH]);
+void print_grammar_table(G_Ele G[][MAX_RULE_LENGTH]);
 
 void compute_first(G_Ele G[][MAX_RULE_LENGTH], bool first_set[][NUM_TERMINAL]);
 

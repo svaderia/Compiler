@@ -12,7 +12,6 @@ stmt ioStmt  .
 stmt funCallStmt SEMICOLON  .
 functionDef FUNCTION SQO parameter_list SQC ASSIGNOP FUNID SQO parameter_list SQC stmtsAndFunctionDefs END SEMICOLON  .
 parameter_list type ID remainingList  .
-parameter_list EPSILON  .
 type INT  .
 type REAL  .
 type STRING  .
@@ -30,11 +29,10 @@ leftHandSide_listVar SQO var_list SQC  .
 rightHandSide_type1 arithmeticExpression  .
 rightHandSide_type1 sizeExpression  .
 rightHandSide_type1 funCallStmt  .
-rightHandSide_type1 matrix  .
-rightHandSide_type2 funCallStmt  .
 rightHandSide_type2 sizeExpression  .
+rightHandSide_type2 funCallStmt  .
 sizeExpression SIZE ID  .
-ifStmt IF OP booleanExpression CL stmt otherStmts elseStmt ENDIF  .
+ifStmt IF OP booleanExpression CL stmt otherStmts elseStmt ENDIF SEMICOLON  .
 elseStmt ELSE stmt otherStmts  .
 elseStmt EPSILON  .
 otherStmts stmt otherStmts  .
@@ -54,8 +52,6 @@ recArithmeticTerm operator_highPrecedence arithmeticTerm  .
 recArithmeticTerm EPSILON  .
 factor OP arithmeticExpression CL  .
 factor var  .
-arithmeticExpression OP arithmeticExpression CL  .
-arithmeticExpression var  .
 operator_lowPrecedence PLUS  .
 operator_lowPrecedence MINUS  .
 operator_highPrecedence MUL  .

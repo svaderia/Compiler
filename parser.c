@@ -28,7 +28,7 @@ bool is_nt(char* nt){
     return i != -1;
 }
 
-void read_grammer(G_Ele G[][MAX_RULE_LENGTH], FILE* fp){
+void read_grammar(G_Ele G[][MAX_RULE_LENGTH], FILE* fp){
     int i = 0;
     int pos = 0;
     char LHS[100];
@@ -59,7 +59,7 @@ void read_grammer(G_Ele G[][MAX_RULE_LENGTH], FILE* fp){
     }
 }
 
-void print_grammer_table(G_Ele G[][MAX_RULE_LENGTH]){
+void print_grammar_table(G_Ele G[][MAX_RULE_LENGTH]){
     int i, j;
     for (i = 0; i < MAX_RULE; i++){
         printf("%d) %s --> ",i+1 ,  id_to_nt(G[i][0].value.nt));
