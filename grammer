@@ -1,0 +1,92 @@
+mainFunction MAIN SQO SQC stmtsAndFunctionDefs END  .
+stmtsAndFunctionDefs stmtOrFunctionDef recStmtsAndFunctionDefs  .
+recStmtsAndFunctionDefs stmtsAndFunctionDefs  .
+recStmtsAndFunctionDefs EPSILON  .
+stmtOrFunctionDef stmt  .
+stmtOrFunctionDef functionDef  .
+stmt declarationStmt  .
+stmt assignmentStmt_type1  .
+stmt assignmentStmt_type2  .
+stmt ifStmt  .
+stmt ioStmt  .
+stmt funCallStmt SEMICOLON  .
+functionDef FUNCTION SQO parameter_list SQC ASSIGNOP FUNID SQO parameter_list SQC stmtsAndFunctionDefs END SEMICOLON  .
+parameter_list type ID remainingList  .
+parameter_list EPSILON  .
+type INT  .
+type REAL  .
+type STRING  .
+type MATRIX  .
+remainingList COMMA parameter_list  .
+remainingList EPSILON  .
+declarationStmt type var_list SEMICOLON  .
+var_list ID more_ids  .
+more_ids COMMA var_list  .
+more_ids EPSILON  .
+assignmentStmt_type1 leftHandSide_singleVar ASSIGNOP rightHandSide_type1 SEMICOLON  .
+assignmentStmt_type2 leftHandSide_listVar ASSIGNOP rightHandSide_type2 SEMICOLON  .
+leftHandSide_singleVar ID  .
+leftHandSide_listVar SQO var_list SQC  .
+rightHandSide_type1 arithmeticExpression  .
+rightHandSide_type1 sizeExpression  .
+rightHandSide_type1 funCallStmt  .
+rightHandSide_type1 matrix  .
+rightHandSide_type2 funCallStmt  .
+rightHandSide_type2 sizeExpression  .
+sizeExpression SIZE ID  .
+ifStmt IF OP booleanExpression CL stmt otherStmts elseStmt ENDIF  .
+elseStmt ELSE stmt otherStmts  .
+elseStmt EPSILON  .
+otherStmts stmt otherStmts  .
+otherStmts EPSILON  .
+ioStmt READ OP ID CL SEMICOLON  .
+ioStmt PRINT OP ID CL SEMICOLON  .
+funCallStmt FUNID OP inputParameterList CL  .
+inputParameterList var listVar  .
+inputParameterList EPSILON  .
+listVar COMMA inputParameterList  .
+listVar EPSILON  .
+arithmeticExpression arithmeticTerm recArithmeticExpression  .
+recArithmeticExpression operator_lowPrecedence arithmeticExpression  .
+recArithmeticExpression EPSILON  .
+arithmeticTerm factor recArithmeticTerm  .
+recArithmeticTerm operator_highPrecedence arithmeticTerm  .
+recArithmeticTerm EPSILON  .
+factor OP arithmeticExpression CL  .
+factor var  .
+arithmeticExpression OP arithmeticExpression CL  .
+arithmeticExpression var  .
+operator_lowPrecedence PLUS  .
+operator_lowPrecedence MINUS  .
+operator_highPrecedence MUL  .
+operator_highPrecedence DIV  .
+booleanExpression OP booleanExpression CL logicalOp OP booleanExpression CL  .
+booleanExpression constrainedVars relationalOp constrainedVars  .
+constrainedVars ID  .
+constrainedVars NUM  .
+constrainedVars RNUM  .
+var ID  .
+var NUM  .
+var RNUM  .
+var matrixElement  .
+var STR  .
+var matrix  .
+matrix SQO rows SQC  .
+rows row recRows  .
+recRows SEMICOLON rows  .
+recRows EPSILON  .
+row NUM recRow  .
+recRow remainingColElements  .
+recRow EPSILON  .
+remainingColElements COMMA NUM remainingColElements  .
+remainingColElements EPSILON  .
+matrixElement ID SQO NUM COMMA NUM SQC  .
+logicalOp AND  .
+logicalOp OR  .
+booleanExpression NOT OP booleanExpression CL  .
+relationalOp LT  .
+relationalOp LE  .
+relationalOp EQ  .
+relationalOp GT  .
+relationalOp GE  .
+relationalOp NE  .
