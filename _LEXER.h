@@ -18,4 +18,8 @@ Set* get_keywords();
 
 void print_token(Token* t);
 
+token_id token_to_id(char* token);
+
+char* id_to_token(token_id id);
+
 #endif

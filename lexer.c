@@ -21,7 +21,7 @@ int offset = 0;
 bool eof = false;
 int lineNo = 1;
 bool lexical_error = 0;
-char* token_class[41] = {"ASSIGNOP","COMMENT","FUNID","ID","NUM","RNUM","STR","END","INT","REAL","STRING","MATRIX","MAIN","SQO","SQC","OP","CL","SEMICOLON","COMMA","IF","ELSE","ENDIF","READ","PRINT","FUNCTION","PLUS","MINUS","MUL","DIV","SIZE","AND","OR","NOT","LT","LE","EQ","GT","GE","NE","ENDFILE","ERROR"};
+char* token_class[NUM_TERMINAL] = {"ASSIGNOP","COMMENT","FUNID","ID","NUM","RNUM","STR","END","INT","REAL","STRING","MATRIX","MAIN","SQO","SQC","OP","CL","SEMICOLON","COMMA","IF","ELSE","ENDIF","READ","PRINT","FUNCTION","PLUS","MINUS","MUL","DIV","SIZE","AND","OR","NOT","LT","LE","EQ","GT","GE","NE","DOLLAR","ERROR", "EPSILON"};
 
 FILE *getStream(FILE *fp, buffer b, int k)
 {	int count = -1;
@@ -39,7 +39,7 @@ char* id_to_token(token_id id){
 
 token_id token_to_id(char* token){
     int i;
-    for(i=0; i < 41; i++){
+    for(i=0; i < NUM_TERMINAL; i++){
         if(! strcmp(token_class[i], token))
             return i;
     }
@@ -85,7 +85,7 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
     while(1){
         if (offset == k || strlen(b) == 0 || b[offset] == '\0'){
 			if( eof ){
-                token -> id = ENDFILE;
+                token -> id = DOLLAR;
                 token -> lineNo = lineNo;
                 token -> value = "$";
 				return token;

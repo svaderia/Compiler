@@ -5,7 +5,8 @@
 
 typedef char* buffer;
 
-extern char* token_class[41];
+extern char* token_class[42];
+#define NUM_TERMINAL 42
 
 enum token_id{
 ASSIGNOP,
@@ -47,8 +48,9 @@ EQ,
 GT,
 GE,
 NE,
-ENDFILE, 
-ERROR
+DOLLAR, 
+ERROR,
+EPSILON
 };
 
 typedef enum token_id token_id;
