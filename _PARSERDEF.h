@@ -5,7 +5,7 @@
 #define _PARSERDEF
 
 #define MAX_RULE_LENGTH 13
-#define MAX_RULE 88
+#define MAX_RULE 87
 #define NUM_NONTERMINAL 45
 
 

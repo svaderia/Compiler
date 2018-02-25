@@ -61,22 +61,21 @@ booleanExpression constrainedVars relationalOp constrainedVars  .
 constrainedVars ID  .
 constrainedVars NUM  .
 constrainedVars RNUM  .
-var ID  .
+var ID matrixElement .
 var NUM  .
 var RNUM  .
-var matrixElement  .
 var STR  .
 var matrix  .
+matrixElement SQO NUM COMMA NUM SQC  .
+matrixElement EPSILON  .
 matrix SQO rows SQC  .
 rows row recRows  .
 recRows SEMICOLON rows  .
 recRows EPSILON  .
 row NUM recRow  .
 recRow remainingColElements  .
-recRow EPSILON  .
 remainingColElements COMMA NUM remainingColElements  .
 remainingColElements EPSILON  .
-matrixElement ID SQO NUM COMMA NUM SQC  .
 logicalOp AND  .
 logicalOp OR  .
 booleanExpression NOT OP booleanExpression CL  .
