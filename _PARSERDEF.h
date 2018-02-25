@@ -75,4 +75,12 @@ typedef struct rule_ele{
     int length;
 }G_Ele;
 
+typedef struct pnode{
+    G_Value ele;
+    token_type tp;
+    struct pnode* parent;
+    struct pnode* sibling;
+    struct pnode* child;
+}Tnode;
+
 #endif

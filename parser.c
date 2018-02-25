@@ -7,6 +7,8 @@
 #include "_SET.h"
 #include "_PARSERDEF.h"
 #include "_PARSER.h"
+#include "_STACK.h"
+#include "_LINKEDLIST.h"
 
 char* nt[NUM_NONTERMINAL] = {"mainFunction","stmtsAndFunctionDefs","recStmtsAndFunctionDefs","stmtOrFunctionDef","stmt","functionDef","parameter_list","type","remainingList","declarationStmt","var_list","more_ids","assignmentStmt_type1","assignmentStmt_type2","leftHandSide_singleVar","leftHandSide_listVar","rightHandSide_type1","rightHandSide_type2","sizeExpression","ifStmt","elseStmt","otherStmts","ioStmt","funCallStmt" ,"inputParameterList","listVar","arithmeticExpression", "recArithmeticExpression", "arithmeticTerm", "recArithmeticTerm", "factor","operator_lowPrecedence","operator_highPrecedence","booleanExpression","constrainedVars","var","matrix","rows","recRows","row","recRow","remainingColElements","matrixElement","logicalOp","relationalOp"};
 
@@ -263,42 +265,6 @@ void initialize_Table(int Table[][NUM_TERMINAL]){
     }
 }
 
-// void compute_parse_table(int Table[][NUM_TERMINAL], bool first_set[][NUM_TERMINAL], bool follow_set[][NUM_TERMINAL], G_Ele G[][MAX_RULE_LENGTH]){
-//     int i, j, k , A, B, C;
-//     initialize_Table(Table);
-//     for(i = 0; i < MAX_RULE; i++){
-//         A = G[i][0].value.nt;
-//         j = 1;
-//         C = G[i][j].value.nt;
-//         while(j < G[i][0].length + 1 && G[i][j].tp == NT && first_set[C][EPSILON] ){
-//             for(k=0; k < NUM_TERMINAL ; k++){
-//                 if(first_set[C][k])
-//                     Table[A][k] = i;
-//             }
-//             Table[A][EPSILON] = -1;
-//             j++;
-//             C = G[i][j].value.nt;            
-//         }
-//         C = G[i][j].value.nt;        
-        
-//         if(j == G[i][0].length + 1 ){
-//             for(k = 0; k < NUM_TERMINAL; k++){
-//                 if(follow_set[A][k])
-//                     Table[A][k] = i;
-//             }
-//         }else if(G[i][j].tp == T && ! G[i][j].value.t != EPSILON){
-//             C = G[i][j].value.t;
-//             Table[A][C] = i;
-//         }else if( ! first_set[C][EPSILON] ){
-//             for(k = 0; k < NUM_TERMINAL; k++){
-//                 if(first_set[C][k])
-//                     Table[A][k] = i;
-//             }
-//         }
-//     }
-// }
-
-
 void compute_parse_table(int Table[][NUM_TERMINAL], bool first_set[][NUM_TERMINAL], bool follow_set[][NUM_TERMINAL], G_Ele G[][MAX_RULE_LENGTH]){
     int i, j, k , A, B, C;
     initialize_Table(Table);
@@ -347,4 +313,82 @@ void print_parse_table(int Table[][NUM_TERMINAL], G_Ele G[][MAX_RULE_LENGTH]){
             }
         }
     }
+}
+
+Tnode* get_tree_node(G_Ele g){
+    Tnode* t = (Tnode*) malloc(sizeof(Tnode));
+    t -> parent = NULL;
+    t -> sibling = NULL;
+    t -> child = NULL;
+    if(g.tp == T){
+        t -> ele.t = g.value.t;
+        t -> tp = g.tp;
+    }else{
+        t -> ele.nt = g.value.nt;
+        t -> tp = g.tp;
+    }
+    return t;
+}
+
+Tnode* construct_parse_tree(int parseTable[][NUM_TERMINAL], G_Ele G[][MAX_RULE_LENGTH], List* input){
+    LNode* inp = input -> head;
+    int rule_num, j;
+    Tnode* temp;
+    G_Ele dol, mainf, rule;
+    dol.value.t = DOLLAR;
+    dol.tp = T;
+    dol.length = 0;
+    mainf.value.t = mainFunction;
+    mainf.tp = NT;
+    mainf.length = 0;
+    Tnode* pt = get_tree_node(mainf);
+    pt -> sibling = pt;
+    Stack* st = initialize_stack();
+    st = push_stack(st, dol);
+    st = push_stack(st, mainf);
+    Node* top;
+
+    while(1){
+        top = top_stack(st);
+        if( top -> tp == T && top -> ele.t == DOLLAR && inp->ele->id == DOLLAR ){
+            printf("SUCCESS ! ! ! !");
+            break;
+        }else if( top -> tp == T && top -> ele.t == inp->ele->id){
+            st = pop_stack(st); 
+            inp = inp -> next;
+            while(pt -> sibling == NULL)
+                pt = pt -> parent;
+            pt = pt -> sibling;
+        }else if (top -> tp == NT && parseTable[top->ele.nt][inp->ele->id] != -1){
+            st = pop_stack(st);
+            st = push_rule(st, G, parseTable[top->ele.nt][inp->ele->id]);
+            print_rule(G, parseTable[top->ele.nt][inp->ele->id]);
+            bool flag = 1;
+            rule_num = parseTable[top->ele.nt][inp->ele->id];
+            for(j = 1; j < G[rule_num][0].length + 1; j++){
+                if(flag == 1){
+                    temp = get_tree_node(G[rule_num][j]);
+                    temp -> parent = pt;
+                    pt -> child = temp;
+                    flag = 0;
+                    pt = temp;
+                }else{
+                    temp = get_tree_node(G[rule_num][j]);
+                    temp -> parent = pt -> parent;
+                    pt -> sibling = temp;
+                    pt = temp;
+                }
+            }
+            pt = pt -> parent -> child;
+        }else if( top -> tp == T && top -> ele.t == EPSILON){
+            st = pop_stack(st);
+            while(pt -> sibling == NULL)
+                pt = pt -> parent;
+            pt = pt -> sibling;
+        }else{
+            printf("ERROR ! ! ! ! ! !");
+            break;
+        }
+    }
+    return pt;
 }
