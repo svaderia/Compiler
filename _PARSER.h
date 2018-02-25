@@ -16,4 +16,8 @@ void compute_follow(G_Ele G[][MAX_RULE_LENGTH], bool first_set[][NUM_TERMINAL], 
 
 void print_follow_set(bool follow_set[][NUM_TERMINAL]);
 
+void compute_parse_table(int Table[][NUM_TERMINAL], bool first_set[][NUM_TERMINAL], bool follow_set[][NUM_TERMINAL], G_Ele G[][MAX_RULE_LENGTH]);
+
+void print_parse_table(int Table[][NUM_TERMINAL], G_Ele G[][MAX_RULE_LENGTH]);
+
 #endif

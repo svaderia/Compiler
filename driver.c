@@ -21,11 +21,15 @@ int main(){
     fp = fopen("grammar", "r");
     G_Ele G[MAX_RULE][MAX_RULE_LENGTH];
     read_grammar(G, fp);
-    print_grammar_table(G);
+    // print_grammar_table(G); 
     bool first_set[NUM_NONTERMINAL][NUM_TERMINAL];
     compute_first(G, first_set);
     // print_first_set(first_set);
     bool follow_set[NUM_NONTERMINAL][NUM_TERMINAL];
     compute_follow(G, first_set, follow_set);
     // print_follow_set(follow_set);
+
+    int Table[NUM_NONTERMINAL][NUM_TERMINAL];
+    compute_parse_table(Table, first_set, follow_set, G);
+    print_parse_table(Table, G);
 }

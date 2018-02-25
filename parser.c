@@ -59,17 +59,22 @@ void read_grammar(G_Ele G[][MAX_RULE_LENGTH], FILE* fp){
     }
 }
 
+void print_rule(G_Ele G[][MAX_RULE_LENGTH], int i){
+    int j;
+    printf("%d) %s --> ",i+1 ,  id_to_nt(G[i][0].value.nt));
+    for(j = 1; j < G[i][0].length + 1; j++){
+        if(G[i][j].tp != NT)
+            printf("%s ", id_to_token(G[i][j].value.t));
+        else
+            printf("%s ", id_to_nt(G[i][j].value.nt));
+    }
+    printf("\n");
+}
+
 void print_grammar_table(G_Ele G[][MAX_RULE_LENGTH]){
-    int i, j;
+    int i;
     for (i = 0; i < MAX_RULE; i++){
-        printf("%d) %s --> ",i+1 ,  id_to_nt(G[i][0].value.nt));
-        for(j = 1; j < G[i][0].length + 1; j++){
-            if(G[i][j].tp != NT)
-                printf("%s ", id_to_token(G[i][j].value.t));
-            else
-                printf("%s ", id_to_nt(G[i][j].value.nt));
-        }
-        printf("\n");
+        print_rule(G, i);   
     }
 }
 
@@ -152,7 +157,7 @@ void follow(G_Ele G[][MAX_RULE_LENGTH], bool follow_set[][NUM_TERMINAL], bool fi
                             if(follow_set[A][k])
                                 follow_set[B][k] = true;
                     }
-                }else if(G[i][j+1].tp == T){
+                }else if(G[i][j+1].tp == T && G[i][j+1].value.t != EPSILON){
                     C = G[i][j+1].value.t;
                     follow_set[B][C] = true;
                     // break;
@@ -160,13 +165,13 @@ void follow(G_Ele G[][MAX_RULE_LENGTH], bool follow_set[][NUM_TERMINAL], bool fi
                     l = j+1;
                     C = G[i][l].value.nt;
                     while(G[i][l].tp == NT && first_set[C][EPSILON] && l < G[i][0].length + 1){
-                        C = G[i][l].value.nt;
                         for(k=0; k < NUM_TERMINAL ; k++){
                             if(first_set[C][k])
                                 follow_set[B][k] = true;
                         }
                         follow_set[B][EPSILON] = false;
                         l++;
+                        C = G[i][l].value.nt;                        
                     }
                     C = G[i][l].value.nt;
                     if(l == G[i][0].length + 1){
@@ -246,5 +251,100 @@ void print_follow_set(bool follow_set[][NUM_TERMINAL]){
                 printf("%s  ", id_to_token(j));
         }
         printf("\n");
+    }
+}
+
+void initialize_Table(int Table[][NUM_TERMINAL]){
+    int i,j;
+    for(i = 0; i < NUM_NONTERMINAL; i++){
+        for(j = 0; j < NUM_TERMINAL; j++){
+            Table[i][j] = -1;
+        }
+    }
+}
+
+// void compute_parse_table(int Table[][NUM_TERMINAL], bool first_set[][NUM_TERMINAL], bool follow_set[][NUM_TERMINAL], G_Ele G[][MAX_RULE_LENGTH]){
+//     int i, j, k , A, B, C;
+//     initialize_Table(Table);
+//     for(i = 0; i < MAX_RULE; i++){
+//         A = G[i][0].value.nt;
+//         j = 1;
+//         C = G[i][j].value.nt;
+//         while(j < G[i][0].length + 1 && G[i][j].tp == NT && first_set[C][EPSILON] ){
+//             for(k=0; k < NUM_TERMINAL ; k++){
+//                 if(first_set[C][k])
+//                     Table[A][k] = i;
+//             }
+//             Table[A][EPSILON] = -1;
+//             j++;
+//             C = G[i][j].value.nt;            
+//         }
+//         C = G[i][j].value.nt;        
+        
+//         if(j == G[i][0].length + 1 ){
+//             for(k = 0; k < NUM_TERMINAL; k++){
+//                 if(follow_set[A][k])
+//                     Table[A][k] = i;
+//             }
+//         }else if(G[i][j].tp == T && ! G[i][j].value.t != EPSILON){
+//             C = G[i][j].value.t;
+//             Table[A][C] = i;
+//         }else if( ! first_set[C][EPSILON] ){
+//             for(k = 0; k < NUM_TERMINAL; k++){
+//                 if(first_set[C][k])
+//                     Table[A][k] = i;
+//             }
+//         }
+//     }
+// }
+
+
+void compute_parse_table(int Table[][NUM_TERMINAL], bool first_set[][NUM_TERMINAL], bool follow_set[][NUM_TERMINAL], G_Ele G[][MAX_RULE_LENGTH]){
+    int i, j, k , A, B, C;
+    initialize_Table(Table);
+    for(i = 0; i < MAX_RULE; i++){
+        A = G[i][0].value.nt;
+        for(j = 1; j < G[i][0].length + 1; j++ ){
+            if(G[i][j].tp == T && G[i][j].value.t != EPSILON){
+                C = G[i][j].value.t;
+                Table[A][C] = i;
+                break;
+            }else if(G[i][j].tp == NT && ! first_set[G[i][j].value.nt][EPSILON]){
+                C = G[i][j].value.nt;
+                for(k = 0; k < NUM_TERMINAL; k++){
+                    if(first_set[C][k])
+                        Table[A][k] = i;
+                }
+                break;
+            }else{
+                if(G[i][j].tp == NT){
+                    C = G[i][j].value.nt;
+                    for(k = 0; k < NUM_TERMINAL; k++){
+                        if(first_set[C][k] && k != EPSILON)
+                            Table[A][k] = i;
+                    }
+                }
+                if( j == G[i][0].length){
+                    for(k = 0; k < NUM_TERMINAL; k++){
+                        if(follow_set[A][k] && k != EPSILON){
+                            Table[A][k] = i;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+void print_parse_table(int Table[][NUM_TERMINAL], G_Ele G[][MAX_RULE_LENGTH]){
+    int i, j, k;
+    for(i = 0; i < NUM_NONTERMINAL; i++){
+        printf("Non Terminal %s\n", id_to_nt(i));
+        for(j = 0; j < NUM_TERMINAL; j++){
+            if(Table[i][j] != -1){
+                printf("\tTerminal %s \t ", id_to_token(j));            
+                print_rule(G, Table[i][j]);
+            }
+        }
     }
 }
