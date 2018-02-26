@@ -24,7 +24,7 @@ char* id_to_nt(non_terminal id);
 
 non_terminal nt_to_id(char* token);
 
-Tnode* construct_parse_tree(int parseTable[][NUM_TERMINAL], G_Ele G[][MAX_RULE_LENGTH], List* input);
+Tnode* construct_parse_tree(FILE* test, int parseTable[][NUM_TERMINAL], G_Ele G[][MAX_RULE_LENGTH]);
 
 void print_parse_tree(FILE* fp, Tnode* root);
 

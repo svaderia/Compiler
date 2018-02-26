@@ -332,7 +332,13 @@ Tnode* get_tree_node(G_Ele g){
     return t;
 }
 
-Tnode* construct_parse_tree(int parseTable[][NUM_TERMINAL], G_Ele G[][MAX_RULE_LENGTH], List* input){
+Tnode* construct_parse_tree(FILE* test, int parseTable[][NUM_TERMINAL], G_Ele G[][MAX_RULE_LENGTH]){
+    Set* keywords = get_keywords();
+    int k = 4096;
+    buffer b = (buffer) malloc(k * sizeof(char));
+    eof = false;
+    offset = 0;
+    List* input = getTokens(test, b, k, keywords);
     LNode* inp = input -> head;
     int rule_num, j;
     Tnode* temp;
@@ -357,7 +363,7 @@ Tnode* construct_parse_tree(int parseTable[][NUM_TERMINAL], G_Ele G[][MAX_RULE_L
             continue;
         }
         if( top -> tp == T && top -> ele.t == DOLLAR && inp->ele->id == DOLLAR ){
-            printf("SUCCESS ! ! ! !");
+            printf("Input source code is syntactically correct...........");
             break;
         }else if( top -> tp == T && top -> ele.t == inp->ele->id){
             st = pop_stack(st); 
