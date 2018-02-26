@@ -206,7 +206,10 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
                     default:
                         lexical_error = 1;
                         offset++;
-                        REPORT_ERROR(token, lexeme);
+                        printf("Error:: Unknown Symbol < %s > at Line < %d >\n", lexeme, lineNo);
+                        token -> id = ERROR;
+                        token -> lineNo = lineNo;
+                        return token;
                 }
                 offset++;
                 break;
@@ -466,12 +469,20 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
 					case '8':
 					case '9':
                         lexeme[i++] = b[offset++];
+                        if(i > 20){
+                            printf("Error: ID name < %s > is greater than 20 at Line <%d > ", lexeme, lineNo);
+                            lexical_error = 1;
+                        }
                         TOKEN_RETURN(token, ID, lexeme);
                     default:
                         if(serach_set(keywords, lexeme)){
                             token_id ik = token_to_id(convert_to_upper(lexeme));
                             // offset++;
                             TOKEN_RETURN(token, ik, lexeme);
+                        }
+                        if(i > 20){
+                            printf("Error: ID name < %s > is greater than 20 at Line <%d > ", lexeme, lineNo);
+                            lexical_error = 1;
                         }
                         TOKEN_RETURN(token, ID, lexeme);
                 }
@@ -504,6 +515,11 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
                 while('a' <= b[offset] && b[offset] <= 'z' || 'A' <= b[offset] && b[offset] <= 'Z' || '0' <= b[offset] && b[offset] <= '9'){
                     lexeme[i++] = b[offset++];
                 }
+                if(i > 20){
+                    printf("Error: FUNID name < %s > is greater than 20 at Line <%d > ", lexeme, lineNo);
+                    lexical_error = 1;
+                }
+
                 if(! strcmp(lexeme, "_main")){
                     TOKEN_RETURN(token, MAIN, lexeme);
                 }else
@@ -526,8 +542,12 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
                 }
                 if(b[offset] == '\"'){
                     lexeme[i++] = b[offset++];
-                    TOKEN_RETURN(token, STR, lexeme);}
-                else{
+                    if(i > 20){
+                        printf("Error: FUNID name < %s > is greater than 20 at Line <%d > ", lexeme, lineNo);
+                        lexical_error = 1;
+                    }
+                    TOKEN_RETURN(token, STR, lexeme);
+                }else{
                     lexical_error = 1;
                     REPORT_ERROR(token, lexeme);
                 }
