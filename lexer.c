@@ -200,6 +200,9 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
 					case '9':
                         state = 29;
                         break;
+                    case '#':
+                        state = 43;
+                        break;
                     default:
                         lexical_error = 1;
                         offset++;
@@ -528,6 +531,12 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
                     lexical_error = 1;
                     REPORT_ERROR(token, lexeme);
                 }
+                break;
+            case 43:
+                while( b[offset] != '\n'){
+                    lexeme[i++] = b[offset++];
+                }
+                TOKEN_RETURN(token, COMMENT, lexeme);
                 break;
        }
     }
