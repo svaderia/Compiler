@@ -543,7 +543,7 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
     free(lexeme);
 }
 
-List* all_tokens(FILE* fp, buffer b, int k, Set* keywords){
+List* getTokens(FILE* fp, buffer b, int k, Set* keywords){
     List* l = create_list();
     while(! ( offset >= strlen(b) && eof )){
         l = add_to_list(l, getToken(fp, b, k, keywords));
