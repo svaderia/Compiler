@@ -320,6 +320,8 @@ Tnode* get_tree_node(G_Ele g){
     t -> parent = NULL;
     t -> sibling = NULL;
     t -> child = NULL;
+    t -> token = NULL;
+    t -> isleaf = false;
     if(g.tp == T){
         t -> ele.t = g.value.t;
         t -> tp = g.tp;
@@ -350,19 +352,25 @@ Tnode* construct_parse_tree(int parseTable[][NUM_TERMINAL], G_Ele G[][MAX_RULE_L
 
     while(1){
         top = top_stack(st);
+        if(inp ->ele -> id == COMMENT){
+            inp = inp -> next;
+            continue;
+        }
         if( top -> tp == T && top -> ele.t == DOLLAR && inp->ele->id == DOLLAR ){
             printf("SUCCESS ! ! ! !");
             break;
         }else if( top -> tp == T && top -> ele.t == inp->ele->id){
             st = pop_stack(st); 
-            inp = inp -> next;
+            pt -> token = inp -> ele;
+            pt -> isleaf = true;
+            inp = inp -> next;            
             while(pt -> sibling == NULL)
                 pt = pt -> parent;
             pt = pt -> sibling;
         }else if (top -> tp == NT && parseTable[top->ele.nt][inp->ele->id] != -1){
             st = pop_stack(st);
             st = push_rule(st, G, parseTable[top->ele.nt][inp->ele->id]);
-            print_rule(G, parseTable[top->ele.nt][inp->ele->id]);
+            // print_rule(G, parseTable[top->ele.nt][inp->ele->id]);
             bool flag = 1;
             rule_num = parseTable[top->ele.nt][inp->ele->id];
             for(j = 1; j < G[rule_num][0].length + 1; j++){
@@ -391,4 +399,66 @@ Tnode* construct_parse_tree(int parseTable[][NUM_TERMINAL], G_Ele G[][MAX_RULE_L
         }
     }
     return pt;
+}
+
+void print_parse_tree(FILE* writter_file, Tnode* root){
+    if (root == NULL)
+        return;
+    print_parse_tree(writter_file, root->child);
+    char not_available[] = "-----";
+    if(root->isleaf){
+        char leaf[] = "yes";
+        if (root->ele.t == EPSILON){
+            fprintf(writter_file, "%-16s %-16s %-16s %-16s %-26s %-16s %-16s\n", 
+                    not_available, not_available, not_available, not_available, 
+                    id_to_nt(root->parent->ele.nt), leaf,
+                    id_to_token(root->ele.t));
+        }
+        else if (root->token->id == RNUM){
+            fprintf(writter_file, "%-16s %-16d %-16s %-16s %-26s %-16s %-16s\n", 
+                    not_available, root->token->lineNo, 
+                    id_to_token(root->token->id), root->token->value,
+                    id_to_nt(root->parent->ele.nt), leaf,
+                    id_to_token(root->ele.t));
+        }
+        else if (root->token->id == NUM){
+            fprintf(writter_file, "%-16s %-16d %-16s %-16s %-26s %-16s %-16s\n",
+                    not_available, root->token->lineNo, 
+                    id_to_token(root->token->id), root->token->value,
+                    id_to_nt(root->parent->ele.nt), leaf,
+                    id_to_token(root->ele.t));
+        }
+        else {
+            fprintf(writter_file, "%-16s %-16d %-16s %-16s %-26s %-16s %-16s\n",
+                    root->token->value,
+                    root->token->lineNo, id_to_token(root->token->id),
+                    not_available, id_to_nt(root->parent->ele.nt), leaf,
+                    id_to_token(root->ele.t));
+        }
+    }
+    else{
+        char nonleaf[] = "no";
+        if (root->parent == NULL){
+            char at_root[] = "ROOT";
+            fprintf(writter_file, "%-16s %-16s %-16s %-16s %-26s %-16s %-16s\n",
+                    not_available, not_available, not_available, not_available, 
+                    at_root, nonleaf,
+                    id_to_nt(root->ele.nt));
+        }
+        else {
+            fprintf(writter_file, "%-16s %-16s %-16s %-16s %-26s %-16s %-16s\n",
+                    not_available, not_available, not_available, not_available, 
+                    id_to_nt(root->parent->ele.nt), nonleaf,
+                    id_to_nt(root->ele.nt));
+        }
+ 
+    }
+    Tnode *pt = root->child;
+    if(root->child == NULL)
+        return;
+    pt = pt->sibling;
+    while(pt != NULL){
+        print_parse_tree(writter_file, pt);
+        pt = pt->sibling;
+    }
 }

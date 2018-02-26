@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdbool.h>
 #include "_LEXERDEF.h"
 
 #ifndef _PARSERDEF
@@ -78,6 +79,8 @@ typedef struct rule_ele{
 typedef struct pnode{
     G_Value ele;
     token_type tp;
+    Token* token;
+    bool isleaf;
     struct pnode* parent;
     struct pnode* sibling;
     struct pnode* child;

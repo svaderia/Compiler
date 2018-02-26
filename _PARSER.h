@@ -26,4 +26,6 @@ non_terminal nt_to_id(char* token);
 
 Tnode* construct_parse_tree(int parseTable[][NUM_TERMINAL], G_Ele G[][MAX_RULE_LENGTH], List* input);
 
+void print_parse_tree(FILE* fp, Tnode* root);
+
 #endif

@@ -17,7 +17,7 @@ int main(){
     eof = false;
     offset = 0;
     List* tokens = all_tokens(fp, b, k, keywords);
-    print_list(tokens);
+    // print_list(tokens);
 
     fp = fopen("grammar", "r");
     G_Ele G[MAX_RULE][MAX_RULE_LENGTH];
@@ -35,4 +35,7 @@ int main(){
     // print_parse_table(Table, G);
     Tnode* root;
     root = construct_parse_tree(Table, G, tokens);
+    FILE* out = fopen("out", "w");
+
+    print_parse_tree(out, root);
 }
