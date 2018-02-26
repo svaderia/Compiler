@@ -3,7 +3,6 @@
 #include <string.h>
 #include <stdbool.h>
 #include "_LEXER.h"
-#include "_LINKEDLIST.h"
 
 List* create_list(){
 	List* temp = (List*) malloc(sizeof(List));

@@ -1,11 +1,6 @@
 #include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include "_SET.h"
-#include "_LEXER.h"
 #include "_LEXERDEF.h"
 #include "_PARSERDEF.h"
-#include "_PARSER.h"
 
 #ifndef _STACK
 #define _STACK

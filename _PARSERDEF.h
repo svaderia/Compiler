@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include <stdbool.h>
 #include "_LEXERDEF.h"
 

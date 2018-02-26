@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "_LEXER.h"
 #include "_LEXERDEF.h"
 #include "_SET.h"
 #include "_LINKEDLIST.h"
