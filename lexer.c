@@ -12,7 +12,7 @@ token -> id = i;\
 token -> lineNo = lineNo;\
 return token;\
 
-#define REPORT_ERROR(token, lexeme)  printf("Error:: Unknown pattern <%s> at Line <%d>\n", lexeme, lineNo);\
+#define REPORT_ERROR(token, lexeme)  printf("Lexical Error:: Unknown pattern <%s> at Line <%d>\n", lexeme, lineNo);\
 token -> id = ERROR;\
 token -> lineNo = lineNo;\
 return token;\
@@ -185,6 +185,32 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
 					case 'x':
 					case 'y':
 					case 'z':
+                    case 'A':
+                    case 'B':
+					case 'C':
+					case 'D':
+					case 'E':
+					case 'F':
+					case 'G':
+					case 'H':
+					case 'I':
+					case 'J':
+					case 'K':
+					case 'L':
+					case 'M':
+					case 'N':
+					case 'O':
+					case 'P':
+					case 'Q':
+					case 'R':
+					case 'S':
+					case 'T':
+					case 'U':
+					case 'V':
+					case 'W':
+					case 'X':
+					case 'Y':
+					case 'Z':
                         state = 34;
                         break;
                     case '0':
@@ -205,7 +231,7 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
                     default:
                         lexical_error = 1;
                         offset++;
-                        printf("Error:: Unknown Symbol < %s > at Line < %d >\n", lexeme, lineNo);
+                        printf("Lexical Error:: Unknown Symbol < %s > at Line < %d >\n", lexeme, lineNo);
                         token -> id = ERROR;
                         token -> lineNo = lineNo;
                         return token;
@@ -469,7 +495,7 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
 					case '9':
                         lexeme[i++] = b[offset++];
                         if(i > 20){
-                            printf("Error: ID name < %s > is greater than 20 at Line <%d > ", lexeme, lineNo);
+                            printf("Lexical Error: ID name < %s > is greater than 20 at Line <%d > \n", lexeme, lineNo);
                             lexical_error = 1;
                         }
                         TOKEN_RETURN(token, ID, lexeme);
@@ -480,7 +506,7 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
                             TOKEN_RETURN(token, ik, lexeme);
                         }
                         if(i > 20){
-                            printf("Error: ID name < %s > is greater than 20 at Line <%d > ", lexeme, lineNo);
+                            printf("Lexical Error: ID name < %s > is greater than 20 at Line <%d > \n", lexeme, lineNo);
                             lexical_error = 1;
                         }
                         TOKEN_RETURN(token, ID, lexeme);
@@ -515,7 +541,7 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
                     lexeme[i++] = b[offset++];
                 }
                 if(i > 20){
-                    printf("Error: FUNID name < %s > is greater than 20 at Line <%d > ", lexeme, lineNo);
+                    printf("Lexical Error: FUNID name < %s > is greater than 20 at Line <%d > \n", lexeme, lineNo);
                     lexical_error = 1;
                 }
 
@@ -542,7 +568,7 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
                 if(b[offset] == '\"'){
                     lexeme[i++] = b[offset++];
                     if(i > 20){
-                        printf("Error: FUNID name < %s > is greater than 20 at Line <%d > ", lexeme, lineNo);
+                        printf("Lexical Error: FUNID name < %s > is greater than 20 at Line <%d > \n", lexeme, lineNo);
                         lexical_error = 1;
                     }
                     TOKEN_RETURN(token, STR, lexeme);
