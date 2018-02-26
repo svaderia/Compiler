@@ -361,8 +361,11 @@ Tnode* construct_parse_tree(FILE* test, int parseTable[][NUM_TERMINAL], G_Ele G[
             inp = inp -> next;
             continue;
         }
+        if(top == NULL || inp == NULL)
+                break;
+            
         if( top -> tp == T && top -> ele.t == DOLLAR && inp->ele->id == DOLLAR ){
-            printf("Input source code is syntactically correct...........\n");
+            printf("Input source code is syntactically correct.\n");
             break;
         }else if( top -> tp == T && top -> ele.t == inp->ele->id){
             st = pop_stack(st); 
@@ -405,8 +408,29 @@ Tnode* construct_parse_tree(FILE* test, int parseTable[][NUM_TERMINAL], G_Ele G[
                 pt = pt -> parent;
             pt = pt -> sibling;
         }else{
-            printf("Error in Syntax analyser\n");
-            break;
+            
+            if(top -> tp == T && top -> ele.t != inp->ele->id && top->ele.t != DOLLAR){
+                printf("Expected token < %s > instead of < %s > at Line < %d > \n", id_to_token(top -> ele.t), id_to_token(inp->ele->id), inp->ele->lineNo );
+            }else if (top->ele.t != DOLLAR){
+                printf("Syntactic error at Line < %d > \n", inp -> ele -> lineNo);
+            }
+            while(inp->ele->id != SEMICOLON){
+                inp = inp -> next;
+            }
+            inp = inp->next;
+            while( st->size > 0 && top_stack(st) -> ele.t != SEMICOLON) {
+                // printf("Popping: ")
+                st = pop_stack(st);
+            }
+            st = pop_stack(st);
+            if(pt -> parent != NULL)
+                pt = pt -> parent;
+            while(pt -> sibling == NULL){
+                pt = pt -> parent;
+            }
+            pt = pt -> sibling;
+            // printf("Error in Syntax analyser\n");
+            // break;
         }
     }
     return pt;
