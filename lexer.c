@@ -511,7 +511,7 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
             
             case 41:
                 lexeme[i++] = b[offset];
-                if('a' <= b[offset] && b[offset] <= 'z'){
+                if('a' <= b[offset] && b[offset] <= 'z' || b[offset] == ' '){
                     state = 42;
                     offset++;
                 }else{
@@ -521,7 +521,7 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
                 break;
 
             case 42:
-                while('a' <= b[offset] && b[offset] <= 'z'){
+                while('a' <= b[offset] && b[offset] <= 'z' || b[offset] == ' '){
                     lexeme[i++] = b[offset++];
                 }
                 if(b[offset] == '\"'){
