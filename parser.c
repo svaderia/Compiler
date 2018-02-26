@@ -376,10 +376,14 @@ Tnode* construct_parse_tree(FILE* test, int parseTable[][NUM_TERMINAL], G_Ele G[
         }else if (top -> tp == NT && parseTable[top->ele.nt][inp->ele->id] != -1){
             st = pop_stack(st);
             st = push_rule(st, G, parseTable[top->ele.nt][inp->ele->id]);
-            // print_rule(G, parseTable[top->ele.nt][inp->ele->id]);
+            print_rule(G, parseTable[top->ele.nt][inp->ele->id]);
             bool flag = 1;
             rule_num = parseTable[top->ele.nt][inp->ele->id];
             for(j = 1; j < G[rule_num][0].length + 1; j++){
+                // if(G[rule_num][j].tp == T)
+                //     printf("%d :: %s\t", j, id_to_token(G[rule_num][j].value.t));
+                // else
+                //     printf("%d :: %s\t", j, id_to_nt(G[rule_num][j].value.nt));
                 if(flag == 1){
                     temp = get_tree_node(G[rule_num][j]);
                     temp -> parent = pt;
@@ -396,6 +400,13 @@ Tnode* construct_parse_tree(FILE* test, int parseTable[][NUM_TERMINAL], G_Ele G[
             pt = pt -> parent -> child;
         }else if( top -> tp == T && top -> ele.t == EPSILON){
             st = pop_stack(st);
+            pt -> token = (Token*) malloc(sizeof(Token));
+            pt -> token -> id = EPSILON;
+            pt -> token -> value = NULL;
+            pt -> token -> lineNo = 0;
+            pt -> ele.t = EPSILON;
+            pt -> tp = T;
+            pt -> isleaf = true;    
             while(pt -> sibling == NULL)
                 pt = pt -> parent;
             pt = pt -> sibling;
@@ -416,47 +427,31 @@ void print_parse_tree(FILE* writter_file, Tnode* root){
         char leaf[] = "yes";
         if (root->ele.t == EPSILON){
             fprintf(writter_file, "%-16s %-16s %-16s %-16s %-26s %-16s %-16s\n", 
-                    not_available, not_available, not_available, not_available, 
+                    not_available, not_available, id_to_token(root->ele.t), not_available, 
                     id_to_nt(root->parent->ele.nt), leaf,
-                    id_to_token(root->ele.t));
-        }
-        else if (root->token->id == RNUM){
-            fprintf(writter_file, "%-16s %-16d %-16s %-16s %-26s %-16s %-16s\n", 
-                    not_available, root->token->lineNo, 
-                    id_to_token(root->token->id), root->token->value,
-                    id_to_nt(root->parent->ele.nt), leaf,
-                    id_to_token(root->ele.t));
-        }
-        else if (root->token->id == NUM){
-            fprintf(writter_file, "%-16s %-16d %-16s %-16s %-26s %-16s %-16s\n",
-                    not_available, root->token->lineNo, 
-                    id_to_token(root->token->id), root->token->value,
-                    id_to_nt(root->parent->ele.nt), leaf,
-                    id_to_token(root->ele.t));
+                    not_available);
         }
         else {
             fprintf(writter_file, "%-16s %-16d %-16s %-16s %-26s %-16s %-16s\n",
                     root->token->value,
                     root->token->lineNo, id_to_token(root->token->id),
                     not_available, id_to_nt(root->parent->ele.nt), leaf,
-                    id_to_token(root->ele.t));
+                    not_available);
         }
     }
     else{
         char nonleaf[] = "no";
+        char at_root[10];
         if (root->parent == NULL){
-            char at_root[] = "ROOT";
-            fprintf(writter_file, "%-16s %-16s %-16s %-16s %-26s %-16s %-16s\n",
-                    not_available, not_available, not_available, not_available, 
-                    at_root, nonleaf,
-                    id_to_nt(root->ele.nt));
+            strcpy(at_root, "ROOT");
         }
         else {
-            fprintf(writter_file, "%-16s %-16s %-16s %-16s %-26s %-16s %-16s\n",
-                    not_available, not_available, not_available, not_available, 
-                    id_to_nt(root->parent->ele.nt), nonleaf,
-                    id_to_nt(root->ele.nt));
+            strcpy(at_root, id_to_nt(root->parent->ele.nt));
         }
+        fprintf(writter_file, "%-16s %-16s %-16s %-16s %-26s %-16s %-16s\n",
+                not_available, not_available, not_available, not_available, 
+                at_root, nonleaf,
+                id_to_nt(root->ele.nt));
  
     }
     Tnode *pt = root->child;
