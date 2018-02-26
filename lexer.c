@@ -431,7 +431,7 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
                             case '9':
                                 lexeme[i++] = b[offset+1];
                                 offset += 2;
-                                TOKEN_RETURN(token, REAL, lexeme);
+                                TOKEN_RETURN(token, RNUM, lexeme);
                             default:
                                 lexical_error = 1;
                                 REPORT_ERROR(token, lexeme);
