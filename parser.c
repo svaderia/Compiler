@@ -362,7 +362,7 @@ Tnode* construct_parse_tree(FILE* test, int parseTable[][NUM_TERMINAL], G_Ele G[
             continue;
         }
         if( top -> tp == T && top -> ele.t == DOLLAR && inp->ele->id == DOLLAR ){
-            printf("Input source code is syntactically correct...........");
+            printf("Input source code is syntactically correct...........\n");
             break;
         }else if( top -> tp == T && top -> ele.t == inp->ele->id){
             st = pop_stack(st); 
@@ -375,14 +375,9 @@ Tnode* construct_parse_tree(FILE* test, int parseTable[][NUM_TERMINAL], G_Ele G[
         }else if (top -> tp == NT && parseTable[top->ele.nt][inp->ele->id] != -1){
             st = pop_stack(st);
             st = push_rule(st, G, parseTable[top->ele.nt][inp->ele->id]);
-            print_rule(G, parseTable[top->ele.nt][inp->ele->id]);
             bool flag = 1;
             rule_num = parseTable[top->ele.nt][inp->ele->id];
             for(j = 1; j < G[rule_num][0].length + 1; j++){
-                // if(G[rule_num][j].tp == T)
-                //     printf("%d :: %s\t", j, id_to_token(G[rule_num][j].value.t));
-                // else
-                //     printf("%d :: %s\t", j, id_to_nt(G[rule_num][j].value.nt));
                 if(flag == 1){
                     temp = get_tree_node(G[rule_num][j]);
                     temp -> parent = pt;
@@ -410,7 +405,7 @@ Tnode* construct_parse_tree(FILE* test, int parseTable[][NUM_TERMINAL], G_Ele G[
                 pt = pt -> parent;
             pt = pt -> sibling;
         }else{
-            printf("ERROR ! ! ! ! ! !");
+            printf("Error in Syntax analyser\n");
             break;
         }
     }
