@@ -543,6 +543,42 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
     free(lexeme);
 }
 
+void remove_comments(FILE* fp, buffer b, int k){
+    buffer temp = (buffer) malloc(k * sizeof(char));
+    int i = 0, j;
+    memset(temp, 0, k);
+    int flag = 0; 
+    while(1){
+        if (offset == k || strlen(b) == 0 || b[offset] == '\0'){
+            printf("%s", temp);			
+            if( eof ){
+                return ;
+			}
+			memset(b, 0, k*sizeof(char));
+            fp = getStream(fp, b, k);
+            offset = 0;
+		}
+        if(flag){
+            if(b[offset] == '\n'){
+                flag = 0;
+                offset++;
+            }else{
+                offset++;
+            }
+        }else{
+            if(b[offset] == '#'){
+                flag = 1;
+                j = offset - 1 ;
+                offset ++;                
+                while(b[j--] != '\n')
+                    temp[i--] = '\0';
+            }else{
+                temp[i++] = b[offset++];
+            }
+        }
+    }   
+}
+
 List* getTokens(FILE* fp, buffer b, int k, Set* keywords){
     List* l = create_list();
     while(! ( offset >= strlen(b) && eof )){
