@@ -1,10 +1,10 @@
 
 CC=gcc
 
-compileAll: driver.o lexer.o set.o parser.o stack.o linklist.o
-	gcc -o stage1exe driver.o lexer.o set.o parser.o stack.o linklist.o
+compileAll: driver.o lexer.o set.o parser.o stack.o linklist.o ast.o
+	gcc -o stage1exe driver.o lexer.o set.o parser.o stack.o linklist.o ast.o
 
-driver.o: driver.c _LEXER.h _LEXERDEF.h _SET.h _PARSER.h _PARSERDEF.h _STACK.h _LINKEDLIST.h
+driver.o: driver.c _LEXER.h _LEXERDEF.h _SET.h _PARSER.h _PARSERDEF.h _STACK.h _LINKEDLIST.h _SEMANTIC.h _SEMANTICDEF.h
 	gcc -g -c driver.c
 	
 set.o: set.c _SET.h
@@ -21,6 +21,9 @@ stack.o: set.c _LEXER.h _LEXERDEF.h _SET.h _PARSER.h _PARSERDEF.h _STACK.h
 
 linklist.o: linklist.c _LINKEDLIST.h
 	gcc -g -c linklist.c
+
+ast.o: ast.c _SEMANTIC.h _SEMANTICDEF.h
+	gcc -g -c ast.c
 
 clean:
 	rm *.o stage1exe
