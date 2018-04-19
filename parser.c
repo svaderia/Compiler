@@ -360,6 +360,7 @@ Tnode* construct_parse_tree(FILE* test, int parseTable[][NUM_TERMINAL], G_Ele G[
     st = push_stack(st, dol);
     st = push_stack(st, mainf);
     Node* top;
+    int synt_error;
 
     while(1){
         top = top_stack(st);
@@ -370,7 +371,7 @@ Tnode* construct_parse_tree(FILE* test, int parseTable[][NUM_TERMINAL], G_Ele G[
         if(top == NULL || inp == NULL)
                 break;
             
-        if( top -> tp == T && top -> ele.t == DOLLAR && inp->ele->id == DOLLAR ){
+        if( top -> tp == T && top -> ele.t == DOLLAR && inp->ele->id == DOLLAR && synt_error != 1){
             printf("Input source code is syntactically correct.\n");
             break;
         }else if( top -> tp == T && top -> ele.t == inp->ele->id){
@@ -416,8 +417,10 @@ Tnode* construct_parse_tree(FILE* test, int parseTable[][NUM_TERMINAL], G_Ele G[
         }else{
             
             if(top -> tp == T && top -> ele.t != inp->ele->id && top->ele.t != DOLLAR){
+                synt_error = 1;
                 printf("Expected token < %s > instead of < %s > at Line < %d > \n", id_to_token(top -> ele.t), id_to_token(inp->ele->id), inp->ele->lineNo );
             }else if (top->ele.t != DOLLAR){
+                synt_error = 1;
                 printf("Syntactic error at Line < %d > \n", inp -> ele -> lineNo);
             }
             while(inp->ele->id != SEMICOLON){
