@@ -1,5 +1,6 @@
 #include "_LEXERDEF.h"
 #include "_PARSERDEF.h"
+#include "_LEXER.h"
 #include "_SEMANTICDEF.h"
 #include <string.h>
 #include <stdio.h>
@@ -8,14 +9,13 @@
 #define next_nt(child) while(child -> tp != NT){ child = child -> sibling; }
 #define next_sib(nchild) while(nchild -> sibling != NULL){ nchild = nchild -> sibling; }
 
-
+ 
 Anode* make_node(Tnode* root, char* name, Anode* parent){
     Anode* t = (Anode*) malloc(sizeof(Anode));
     t -> parent = parent;
     t -> sibling = NULL;
     t -> child = NULL;
     t -> token = root -> token;
-    t -> tp = root -> tp;
     t -> name = (char*) malloc( (strlen(name) + 1) * sizeof(char));
     strcpy(t -> name, name);
     return t;
@@ -46,19 +46,21 @@ Anode* get_ast( Tnode* root, Anode* parent){
         }else if( root -> ele.nt == stmt){
             node = get_ast(child, parent);
         }else if( root -> ele.nt == functionDef){
-            node = make_node(root, "FUNCTION", parent);
+            node = make_node(root, "FUNCTION_DEF", parent);
             next_nt(child);
-            node -> child = get_ast(child, node);
+            node -> child = make_node(child, "PARA_LIST", node);
+            node -> child -> child = get_ast(child, node -> child);
             Anode* nchild = node -> child;
-            while(child -> tp != T && child -> ele.t != FUNCTION){
+            while(child -> ele.t != FUNID){
                 child = child -> sibling;
             }
             next_sib(nchild)
-            nchild -> sibling = make_node(root, "FUNID", node);
+            nchild -> sibling = make_node(child, "FUNID", node);
             nchild = nchild -> sibling;
             child = child -> sibling;
             next_nt(child)
-            nchild -> sibling = get_ast(child, node);
+            nchild -> sibling = make_node(child, "PARA_LIST", node);
+            nchild -> sibling -> child = get_ast(child, nchild -> sibling);
             child = child -> sibling;
             next_nt(child)
             next_sib(nchild)
@@ -161,7 +163,7 @@ Anode* get_ast( Tnode* root, Anode* parent){
             node = make_node(child, "IO", parent);
             node -> child = make_node(child -> sibling -> sibling , "ID", node);
         }else if( root -> ele.nt == funCallStmt){
-            node = make_node(child, "FUN_CALL (ID)", parent) ;
+            node = make_node(child, "FUN_CALL", parent) ;
             next_nt(child)
             node -> child = get_ast(child, node);
         }else if( root -> ele.nt == inputParameterList){
@@ -248,14 +250,15 @@ Anode* get_ast( Tnode* root, Anode* parent){
             }
         }else if( root -> ele.nt == matrixElement){
             if(child -> tp == T && child -> ele.t == EPSILON) return NULL;            
-            node = make_node(child, "MATRIX_ELE_NUM", parent) ;
-            node -> sibling = make_node(child, "MATRIX_ELE_NUM", parent);
+            node = make_node(child -> sibling, "MATRIX_ELE_NUM", parent) ;
+            node -> sibling = make_node(child -> sibling -> sibling -> sibling, "MATRIX_ELE_NUM", parent);
         }else if( root -> ele.nt == matrix){
             node = make_node(child, "MATRIX", parent);
             next_nt(child)
             node -> child = get_ast(child, node);
         }else if( root -> ele.nt == rows){
             node = make_node(child, "ROW", parent);
+            node -> child = get_ast(child, node);
             child = child -> sibling;
             next_nt(child)
             node -> sibling = get_ast(child, parent);
@@ -282,7 +285,15 @@ Anode* get_ast( Tnode* root, Anode* parent){
 
 void print_ast(Anode* root){
     if(root == NULL) return;
-    printf("Name:: %s\n", root -> name);
+    if(root -> parent == NULL){
+        printf("Name:: %-16s Parent:: NULL, Token:: NULL\n", root -> name);
+    }else{
+        if (root -> token != NULL){
+            printf("Name:: %-16s Parent:: %-16s Token:: %-16s TokenType: %-16s\n", root -> name, root -> parent -> name, root -> token -> value, id_to_token(root -> token -> id));
+        }else{
+            printf("Name:: %-16s Parent:: %-16s Token:: NULL\n", root -> name, root -> parent -> name);
+        }
+    }
     print_ast(root -> child);
     if(root -> child == NULL)
         return;
