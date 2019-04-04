@@ -453,13 +453,13 @@ void print_parse_tree(FILE* writter_file, Tnode* root){
     if(root->isleaf){
         char leaf[] = "yes";
         if (root->ele.t == EPSILON){
-            fprintf(writter_file, "%-16s %-16s %-16s %-16s %-26s %-16s %-16s\n", 
+            printf("%-16s %-16s %-16s %-16s %-26s %-16s %-16s\n", 
                     not_available, not_available, id_to_token(root->ele.t), not_available, 
                     id_to_nt(root->parent->ele.nt), leaf,
                     not_available);
         }
         else {
-            fprintf(writter_file, "%-16s %-16d %-16s %-16s %-26s %-16s %-16s\n",
+            printf("%-16s %-16d %-16s %-16s %-26s %-16s %-16s\n",
                     root->token->value,
                     root->token->lineNo, id_to_token(root->token->id),
                     not_available, id_to_nt(root->parent->ele.nt), leaf,
@@ -475,7 +475,7 @@ void print_parse_tree(FILE* writter_file, Tnode* root){
         else {
             strcpy(at_root, id_to_nt(root->parent->ele.nt));
         }
-        fprintf(writter_file, "%-16s %-16s %-16s %-16s %-26s %-16s %-16s\n",
+        printf("%-16s %-16s %-16s %-16s %-26s %-16s %-16s\n",
                 not_available, not_available, not_available, not_available, 
                 at_root, nonleaf,
                 id_to_nt(root->ele.nt));

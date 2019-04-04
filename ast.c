@@ -233,7 +233,12 @@ Anode* get_ast( Tnode* root, Anode* parent){
             next_sib(nchild)
             nchild -> sibling = get_ast(child, node);
         }else if( root -> ele.nt == constrainedVars){
-            node = make_node(child, "CONST_VAR", parent);
+            if(child -> tp == T && child -> ele.t == ID){
+                node = make_node(child, "CONST_VAR", parent);
+                next_nt(child)
+                node -> child = get_ast(child, node);
+            }else
+                node = make_node(child, "CONST_VAR", parent);
         }else if( root -> ele.nt == logicalOp){
             node = make_node(child, "LOG_OP", parent);
         }else if( root -> ele.nt == relationalOp){

@@ -376,6 +376,7 @@ Token* getToken(FILE* fp, buffer b, int k, Set* keywords){
                         offset++;
                         TOKEN_RETURN(token, LE, lexeme);
                     default:
+                        lexeme[--i] = '\0';
                         TOKEN_RETURN(token, LT, lexeme);
                 }
                 offset++;

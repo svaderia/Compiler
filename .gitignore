@@ -13,7 +13,6 @@
 
 # By Users
 .vscode
-test
 temp
 *exe
 *out
